@@ -29,15 +29,12 @@ const emailVerify = Joi.object().keys({
 })
 
 //login 
-const login = Joi.object().keys({
+const userLogin = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(32).required(),
 })
 
-// resetn password-email
-const resetEmail = Joi.object().keys({
-    email: Joi.string().email().required(),
-})
+
 
 //forgot pass
 const updatePassword = Joi.object().keys({
@@ -64,84 +61,9 @@ const resendEmail = Joi.object().keys({
     email: Joi.string().email().required(),
 })
 
-//Create Article
-const createArticle = Joi.object().keys({
-    title: Joi.string().required(),
-    description: Joi.string().required(),
-    file_name: Joi.string().empty(''),
-    url: Joi.string().empty(""),
-    file: Joi.string().empty(''),
-    type: Joi.string().empty(''),
-    file_URL: Joi.string().empty(''),
-
-    date: Joi.string().empty(''),
-
-    user_id: Joi.string(),
-
-    topic_id: Joi.string(),
-
-    group_id: Joi.string(),
+const passwordReset = Joi.object().keys({
+    email: Joi.string().email().required(),
 })
-
-//Update Article
-const updateArticle = Joi.object().keys({
-    title: Joi.string().required(),
-    description: Joi.string().required(),
-    file_name: Joi.string().empty(''),
-    url: Joi.string().empty(''),
-
-    type: Joi.string().empty(''),
-    file_URL: Joi.string().empty(''),
-    file: Joi.string().empty(''),
-
-    date: Joi.string().empty(''),
-
-    user_id: Joi.string(),
-
-    topic_id: Joi.string(),
-
-    group_id: Joi.string(),
-})
-
-//Create Topics
-const createTopic = Joi.object().keys({
-    title: Joi.string().required(),
-    description: Joi.string().empty(''),
-    parent_id: Joi.string().empty(''),
-})
-
-// Update topic
-const updateTopic = Joi.object().keys({
-    title: Joi.string().required(),
-    description: Joi.string().empty(''),
-    parent_id: Joi.string().empty(''),
-})
-
-// Create Group
-const createGroup = Joi.object().keys({
-    name: Joi.string().required(),
-    short_description: Joi.string().empty(''),
-    description: Joi.string().empty(''),
-    member_IDs: Joi.array()
-})
-
-const updateGroup = Joi.object().keys({
-    name: Joi.string().required(),
-    short_description: Joi.string().empty(''),
-    description: Joi.string().empty(''),
-})
-
-// Add to member in group
-const addMembersInGroup = Joi.object().keys({
-    member_IDs: Joi.array()
-})
-
-
-//Share articles in the group
-const shareArticleInGroup = Joi.object().keys({
-    article_id: Joi.array()
-})
-
 
 
 module.exports = {
@@ -150,21 +72,9 @@ module.exports = {
 
     emailVerify,
     resendEmail,
-
-    login,
-    resetEmail,
+    userLogin,
+    passwordReset,
+    
     updatePassword,
 
-    createArticle,
-    updateArticle,
-
-    createTopic,
-    updateTopic,
-
-    //Group
-    createGroup,
-    updateGroup,
-    addMembersInGroup,
-    // Share article in the group
-    shareArticleInGroup,
 }

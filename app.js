@@ -22,11 +22,15 @@ app.use(authJWT)
 
 
 
-app.get('*', (req, res) => {
-    handleError('Hunn Smart!', req, res,)
+app.get('/api/', (req, res) => {
+    res.status(400).send({
+        message:'Hunn smart!',
+        pId:process.pid
+    })
 })
 
 require('./app/routes/user')(app)
+require('./app/routes/auth')(app)
 
 
 const PORT = process.env.PORT || 4000;

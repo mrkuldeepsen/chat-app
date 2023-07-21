@@ -27,4 +27,5 @@ exports.handleError = (error, req, res,) => {
     }
     res.status(400).send(error.error ? error.error.message : error?.original?.sqlMessage ? error?.original?.sqlMessage : error.message ? error : { ...obj },
     )
+    return
 }

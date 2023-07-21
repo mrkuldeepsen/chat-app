@@ -1,29 +1,28 @@
 const { jwt } = require("../modules/module");
+const responseMsg = require("../utils/massage/responseMsg");
 
 
 exports.authJWT = async (req, res, next) => {
+    const path = ['/api/login', '/api/register', '/api/email-verify', '/api/reset-password-email', '/api/update-password', '/api/email-resend']
 
-    const path = ['/login', '/register', '/email-verify', '/reset-password-email', '/update-password', '/email-resend']
-
-    if (path.includes(req.path))
-        return next()
+    if (path.includes(req.path)) return next()
 
     if (req.headers.authorization) {
         try {
-            const data = await jwt.verify(req.cookies.token, process.env.JWT_SECRET)
+            const data = await jwt.verify(req.headers.authorization, process.env.JWT_SECRET)
             req.user = data;
             return next()
+
         } catch (error) {
             res.status(401).send({
-                error: { message: ['Unauthorized access!'] }
+                error: { message: [responseMsg.Unauthorized] }
             })
         }
     } else
         res.status(401).send({
-            error: { message: ['Unauthorized access!'] }
+            error: { message: [responseMsg.Unauthorized] }
         })
-}
-
+};
 
 
 //File uploading 

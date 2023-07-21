@@ -1,10 +1,11 @@
-const { md5, jwt, ejs, path } = require("../modules/module");
+const { md5, ejs, path } = require("../modules/module");
 
 const { User } = require("../models");
 const { handleError } = require("../utils/errorhandler");
 const { handleResponse } = require("../utils/responseHandler");
 const { createUser } = require("../utils/vailidation/schemaVailidation");
-const { sendMailer } = require('../utils/helper');
+const { sendMailer, createToken } = require('../utils/helper');
+const responseMsg = require("../utils/massage/responseMsg");
 
 
 exports.register = async (req, res) => {
@@ -30,16 +31,17 @@ exports.register = async (req, res) => {
             country: country,
             role: 'user',
             status: 'pending',
+            token: createToken(),
             is_email_verify: false
         };
 
         await User.create(data)
             .then(async (user) => {
-                const token = await jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRATION });
-                const message = await ejs.renderFile(path.join(__dirname, '../../views/email.ejs'), { name: user["first_name"], token });
-                sendMailer(user['email'], "Your email verification link", message, res);
+                const message = await ejs.renderFile(path.join(__dirname, '../../views/email.ejs'), { name: user["first_name"], token: user['token'] });
 
-                handleResponse(res, user);
+                sendMailer(user['email'], responseMsg.EmailVerification, message, res);
+
+                handleResponse(res, user, 201);
             })
             .catch(err => {
                 handleError(err.message, req, res)
@@ -49,3 +51,20 @@ exports.register = async (req, res) => {
         handleError(error.message, req, res)
     }
 };
+
+exports.findAll = async (req, res) => {
+    await User.findAll().then((data) => {
+        handleResponse(res, data, 200)
+    }).catch(err => {
+        handleError(err.message, req, res)
+    })
+}
+
+exports.findOne = async (req, res) => {
+    const user = await User.findOne({ where: { id: req.params.id } })
+    if (!user) {
+        handleError(responseMsg.InvalidId, req, res)
+        return
+    }
+    handleResponse(res, user, 200)
+}
