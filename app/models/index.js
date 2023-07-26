@@ -31,8 +31,15 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 const db = {
     sequelize: sequelize,
     User: require('./user')(sequelize, Sequelize),
+    Chat: require('./chat')(sequelize, Sequelize),
 }
 
+
+db.Chat.belongsTo(db.User, { constraints: false, foreignKey: 'id', })
+db.User.hasMany(db.Chat, { constraints: false, foreignKey: 'reciever_id', })
+
+db.Chat.belongsTo(db.User, { constraints: false, foreignKey: 'id', })
+db.User.hasMany(db.Chat, { constraints: false, foreignKey: 'sender_id', })
 
 db.sequelize.sync({ alter: true, }).then(() => { console.log('Yes re-sync') })
 module.exports = db
